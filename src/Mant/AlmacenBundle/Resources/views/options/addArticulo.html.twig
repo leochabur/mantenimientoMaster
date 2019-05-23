@@ -1,0 +1,189 @@
+{% include('ppal.html.twig') %}
+<div class="container">
+	{% for message in app.session.flashBag.get('response') %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+   <div class="col-md-6">
+	{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'role':'form'}})}}
+	    <h3>Nuevo Articulo</h3>
+		<div class="form-group row">
+		    <div class=" col-md-3">
+    			{{	form_label(form.codigo, 'Codigo Interno')	}}
+    			{{	form_widget(form.codigo, {'attr':{'class' : 'form-control form-control-sm', 'size' : '5'}})}}
+    			<span class="text-danger">
+    				{{ form_errors(form.codigo) }}
+    			</span>
+			</div>
+    		<div class="col-md-9">
+    			{{	form_label(form.descripcion)	}}
+    			{{	form_widget(form.descripcion, {'attr':{'class' : 'form-control form-control-sm'}})}}
+    			<span class="text-danger">
+    				{{ form_errors(form.descripcion) }}
+    			</span>
+    		</div>				
+		</div>
+
+		<div class="form-group">
+			{{	form_label(form.especificacion)	}}
+			{{	form_widget(form.especificacion, {'attr':{'class' : 'form-control'}})}}
+			<span class="text-danger">
+				{{ form_errors(form.especificacion) }}
+			</span>
+		</div>	
+		<div class="form-group row">
+		    <div class=" col-md-4">
+    			{{	form_label(form.aprovisionamiento)	}}
+    			{{	form_widget(form.aprovisionamiento, {'attr':{'class' : 'form-control form-control-sm'}})}}
+    			<span class="text-danger">
+    				{{ form_errors(form.aprovisionamiento) }}
+    			</span>
+            </div> 
+    		<div class="col-md-8">
+    			{{	form_label(form.clasificacion)	}}
+    			{{	form_widget(form.clasificacion, {'attr':{'class' : 'form-control form-control-sm'}})}}
+    			<span class="text-danger">
+    				{{ form_errors(form.clasificacion) }}
+    			</span>
+    		</div>            
+		</div>
+		<div class="form-group row">
+    		<div class="col-md-8">
+    			{{	form_label(form.unidad, 'Unidad de Medida')	}}
+    			{{	form_widget(form.unidad, {'attr':{'class' : 'form-control form-control-sm'}})}}
+    			<span class="text-danger">
+    				{{ form_errors(form.unidad) }}
+    			</span>
+    		</div>            
+		</div>		
+		<div class="form-group">
+			{{	form_label(form.almacenes, 'Depositos')	}}
+			{{	form_widget(form.almacenes, {'attr':{'class' : 'form-control'}})}}
+			<span class="text-danger">
+				{{ form_errors(form.almacenes) }}
+			</span>
+		</div>			
+
+		<ul class="tags row" data-prototype="{{ form_widget(form.articulosMarca.vars.prototype)|e }}">
+
+		</ul>		
+		<p>
+			{{ form_widget(form.save, {'attr':{'class' : 'btn btn-success'}})}}
+		</p>
+
+	{{ form_end(form)}} 
+  </div>
+</div>
+<script>
+
+/**var $collectionHolder;
+
+// setup an "add a tag" link
+var $addTagLink = $('<a href="#" class="add_tag_link btn btn-success">Agregar Codigo Barras</a>');
+var $newLinkLi = $('<li></li>').append($addTagLink);
+
+$(document).ready(function() {
+		
+    // Get the ul that holds the collection of tags
+    $collectionHolder = $('ul.tags');
+
+    // add the "add a tag" anchor and li to the tags ul
+    $collectionHolder.append($newLinkLi);
+
+    // count the current form inputs we have (e.g. 2), use that as the new
+    // index when inserting a new item (e.g. 2)
+    $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+    $addTagLink.on('click', function(e) {
+        // prevent the link from creating a "#" on the URL
+        e.preventDefault();
+
+        // add a new tag form (see next code block)
+        addTagForm($collectionHolder, $newLinkLi);
+    });
+});
+
+function addTagForm($collectionHolder, $newLinkLi) {
+    // Get the data-prototype explained earlier
+    var prototype = $collectionHolder.data('prototype');
+
+    // get the new index
+    var index = $collectionHolder.data('index');
+
+    var newForm = prototype;
+    // You need this only if you didn't set 'label' => false in your tags field in TaskType
+    // Replace '__name__label__' in the prototype's HTML to
+    // instead be a number based on how many items we have
+    // newForm = newForm.replace(/__name__label__/g, index);
+
+    // Replace '__name__' in the prototype's HTML to
+    // instead be a number based on how many items we have
+    newForm = newForm.replace(/__name__/g, index);
+
+    // increase the index with one for the next item
+    $collectionHolder.data('index', index + 1);
+
+    // Display the form in the page in an li, before the "Add a tag" link li
+    var $newFormLi = $('<li></li>').append(newForm);
+    $newLinkLi.before($newFormLi);
+}**/
+
+// setup an "add a tag" link
+var $addTagLink = $('<a href="#" class="add_tag_link btn btn-success">Agregar Codigo Barras</a>');
+var $newLinkLi = $('<li></li>').append($addTagLink);
+
+jQuery(document).ready(function() {
+    // Get the ul that holds the collection of tags
+   var $collectionHolder = $('ul.tags');
+    
+    // add the "add a tag" anchor and li to the tags ul
+    $collectionHolder.append($newLinkLi);
+    
+    // count the current form inputs we have (e.g. 2), use that as the new
+    // index when inserting a new item (e.g. 2)
+    $collectionHolder.data('index', $collectionHolder.find(':input').length);
+    
+    $addTagLink.on('click', function(e) {
+        // prevent the link from creating a "#" on the URL
+        e.preventDefault();
+        
+        // add a new tag form (see code block below)
+        addTagForm($collectionHolder, $newLinkLi);
+    });
+    
+    
+});
+
+function addTagForm($collectionHolder, $newLinkLi) {
+    // Get the data-prototype explained earlier
+    var prototype = $collectionHolder.data('prototype');
+    
+    // get the new index
+    var index = $collectionHolder.data('index');
+    
+    // Replace '$$name$$' in the prototype's HTML to
+    // instead be a number based on how many items we have
+    var newForm = prototype.replace(/__name__/g, index);
+    
+    // increase the index with one for the next item
+    $collectionHolder.data('index', index + 1);
+    
+    // Display the form in the page in an li, before the "Add a tag" link li
+    var $newFormLi = $('<li class="col-md-6"></li>').append(newForm);
+    
+    // also add a remove button, just for this example
+    $newFormLi.append('<a href="#" class="remove-tag">x</a>');
+    
+    $newLinkLi.before($newFormLi);
+    
+    // handle the removal, just for this example
+    $('.remove-tag').click(function(e) {
+        e.preventDefault();
+        
+        $(this).parent().remove();
+        
+        return false;
+    });
+}
+</script>

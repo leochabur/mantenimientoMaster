@@ -1,0 +1,357 @@
+<?php
+
+namespace Mant\AlmacenBundle\Entity\movimientos;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ItemMovimiento
+ *
+ * @ORM\Table(name="items_movimientos")
+ * @ORM\Entity
+ */
+class ItemMovimiento
+{
+    /**
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cantidad", type="decimal")
+     */
+    private $cantidad;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="descripcion", type="string", length=255)
+     */
+    private $descripcion;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="precioUnitario", type="float")
+     */
+    private $precioUnitario;
+    
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="MovimientoStock", inversedBy="items") 
+    * @ORM\JoinColumn(name="id_movimiento_stock", referencedColumnName="id")
+    */   
+    private $movimiento;
+    
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="Mant\AlmacenBundle\Entity\ArticuloMarcaAlmacen") 
+    * @ORM\JoinColumn(name="id_articulo_marca", referencedColumnName="id")
+    */       
+    private $articulo;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="precioTotal", type="float")
+     */
+    private $precioTotal;
+    
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="ItemMovimiento", inversedBy="itemsOriginales") 
+    * @ORM\JoinColumn(name="id_item_externo", referencedColumnName="id")
+    */   
+    private $itemExterno;   ////cuando se realiza un ingreso de stock hace referencia a -de ser necesario- el item que se cargo en el formulario de salida y/o transferencia
+    
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="confirmado", type="boolean", options={"default":true})
+     */
+    private $confirmado; ///para saber si el item se encuentra ya confirmado en el caso que se necesite contrastar la salida con la entrada
+
+    /**
+     * @ORM\OneToMany(targetEntity="ItemMovimiento", mappedBy="itemExterno")
+     */
+    private $itemsOriginales; /// para un item observado representa el item asociado
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="observado", type="boolean", options={"default":false})
+     */
+    private $observado; ///al agregar el item al formulario indica si el mismo es observado o no -caso de movimientos cuyas cantidaddes exceden los stock maximos-
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set cantidad
+     *
+     * @param string $cantidad
+     * @return ItemMovimiento
+     */
+    public function setCantidad($cantidad)
+    {
+        $this->cantidad = $cantidad;
+
+        return $this;
+    }
+
+    /**
+     * Get cantidad
+     *
+     * @return string 
+     */
+    public function getCantidad()
+    {
+        return $this->cantidad;
+    }
+
+    /**
+     * Set descripcion
+     *
+     * @param string $descripcion
+     * @return ItemMovimiento
+     */
+    public function setDescripcion($descripcion)
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    /**
+     * Get descripcion
+     *
+     * @return string 
+     */
+    public function getDescripcion()
+    {
+        return $this->descripcion;
+    }
+
+    /**
+     * Set precioUnitario
+     *
+     * @param string $precioUnitario
+     * @return ItemMovimiento
+     */
+    public function setPrecioUnitario($precioUnitario)
+    {
+        $this->precioUnitario = $precioUnitario;
+
+        return $this;
+    }
+
+    /**
+     * Get precioUnitario
+     *
+     * @return string 
+     */
+    public function getPrecioUnitario()
+    {
+        return $this->precioUnitario;
+    }
+
+    /**
+     * Set precioTotal
+     *
+     * @param string $precioTotal
+     * @return ItemMovimiento
+     */
+    public function setPrecioTotal($precioTotal)
+    {
+        $this->precioTotal = $precioTotal;
+
+        return $this;
+    }
+
+    /**
+     * Get precioTotal
+     *
+     * @return string 
+     */
+    public function getPrecioTotal()
+    {
+        return $this->precioTotal;
+    }
+
+    /**
+     * Set movimiento
+     *
+     * @param \Mant\AlmacenBundle\Entity\movimientos\MovimientoStock $movimiento
+     * @return ItemMovimiento
+     */
+    public function setMovimiento(\Mant\AlmacenBundle\Entity\movimientos\MovimientoStock $movimiento = null)
+    {
+        $this->movimiento = $movimiento;
+
+        return $this;
+    }
+
+    /**
+     * Get movimiento
+     *
+     * @return \Mant\AlmacenBundle\Entity\movimientos\MovimientoStock 
+     */
+    public function getMovimiento()
+    {
+        return $this->movimiento;
+    }
+
+
+    
+    public function __toString()
+    {
+        return $this->descripcion;
+    }
+    
+    public function updateArticle(){
+        $this->precioTotal = ($this->cantidad * $this->precioUnitario);
+        $this->articulo->updateStock($this->cantidad);
+    }
+
+    /**
+     * Set articulo
+     *
+     * @param \Mant\AlmacenBundle\Entity\ArticuloMarcaAlmacen $articulo
+     * @return ItemMovimiento
+     */
+    public function setArticulo(\Mant\AlmacenBundle\Entity\ArticuloMarcaAlmacen $articulo = null)
+    {
+        $this->articulo = $articulo;
+
+        return $this;
+    }
+
+    /**
+     * Get articulo
+     *
+     * @return \Mant\AlmacenBundle\Entity\ArticuloMarcaAlmacen 
+     */
+    public function getArticulo()
+    {
+        return $this->articulo;
+    }
+
+    /**
+     * Set confirmado
+     *
+     * @param boolean $confirmado
+     * @return ItemMovimiento
+     */
+    public function setConfirmado($confirmado)
+    {
+        $this->confirmado = $confirmado;
+
+        return $this;
+    }
+
+    /**
+     * Get confirmado
+     *
+     * @return boolean 
+     */
+    public function getConfirmado()
+    {
+        return $this->confirmado;
+    }
+
+    /**
+     * Set itemExterno
+     *
+     * @param \Mant\AlmacenBundle\Entity\movimientos\ItemMovimiento $itemExterno
+     * @return ItemMovimiento
+     */
+    public function setItemExterno(\Mant\AlmacenBundle\Entity\movimientos\ItemMovimiento $itemExterno = null)
+    {
+        $this->itemExterno = $itemExterno;
+
+        return $this;
+    }
+
+    /**
+     * Get itemExterno
+     *
+     * @return \Mant\AlmacenBundle\Entity\movimientos\ItemMovimiento 
+     */
+    public function getItemExterno()
+    {
+        return $this->itemExterno;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->itemsOriginales = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add itemsOriginales
+     *
+     * @param \Mant\AlmacenBundle\Entity\movimientos\ItemMovimiento $itemsOriginales
+     * @return ItemMovimiento
+     */
+    public function addItemsOriginale(\Mant\AlmacenBundle\Entity\movimientos\ItemMovimiento $itemsOriginales)
+    {
+        $this->itemsOriginales[] = $itemsOriginales;
+
+        return $this;
+    }
+
+    /**
+     * Remove itemsOriginales
+     *
+     * @param \Mant\AlmacenBundle\Entity\movimientos\ItemMovimiento $itemsOriginales
+     */
+    public function removeItemsOriginale(\Mant\AlmacenBundle\Entity\movimientos\ItemMovimiento $itemsOriginales)
+    {
+        $this->itemsOriginales->removeElement($itemsOriginales);
+    }
+
+    /**
+     * Get itemsOriginales
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getItemsOriginales()
+    {
+        return $this->itemsOriginales;
+    }
+    
+    public function getCantidadOriginal()
+    {
+        foreach ($this->itemsOriginales as $io){
+            if ($io->getItemExterno() === $this){
+                return $io->getCantidad();
+            }
+        }
+    }
+    
+    public function getObservado()
+    {
+        foreach ($this->itemsOriginales as $io){
+            if ($io->getItemExterno() === $this){
+                if ($io->getCantidad() != $this->cantidad)
+                    return true;
+                else
+                    return false;
+            }
+        }
+        return true;
+    }    
+}

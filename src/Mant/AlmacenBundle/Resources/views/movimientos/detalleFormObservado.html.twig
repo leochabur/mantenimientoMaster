@@ -1,0 +1,56 @@
+<div class="container">
+	
+	<div class="card">
+	  <div class="card-header">
+	    {{ movimiento.getDescripcionFormulario | title }}
+	  </div>
+	  <div class="card-body row">
+	    <span class="card-text col-3 h6">{{ movimiento.fecha | date("m/d/Y") }}</span>
+		<span class="card-text col-3 h6">{% if movimiento.conceptoEntrada is defined %} {{ movimiento.conceptoEntrada | title }} {% endif %}</span>
+	    <span class="card-text col-3 h6"> {% if movimiento.almacenOrigen is defined %} {{ movimiento.almacenOrigen | title }} {% endif %}</span>
+		<span class="card-text col-3 h6"> {% if movimiento.almacenDestino is defined %} {{ movimiento.almacenDestino | title }} {% endif %}</span>		
+	  </div>
+	</div>
+	
+<div>
+				<table class="table table-striped table-hover table-bordered results table-sm estilo1">
+					<thead>
+						<tr>
+                            <th>Codigo</th>
+                            <th>Descripcion</th>
+                            <th>Marca</th>    
+                            <th>Cant. Solicitada</th>
+                            {% if not flag %}
+                            	<th>Cant. Aplicada</th>     
+                            {% endif %}
+                            <th>Importe Unitario</th>                                 
+                            <th>Importe Total</th>                               
+						</tr>
+					</thead>
+					<tbody>
+				        {% for item in movimiento.items  %}
+                            <tr data-id="{{ item.id }}" class="trtable {% if item.observado and not flag %} {{ 'text-danger' }}  {% endif %}">
+                                <td>{{ item.articulo.articuloMarca.articulo.codigo|upper }}</td>
+                                <td>{{ item.articulo.articuloMarca.articulo.descripcion|title }}</td>
+                                <td>{{ item.articulo.articuloMarca.marca|title }}</td>
+                                <td class="text-right">{{ item.cantidad }}</td>
+                                {% if not flag %}
+                                	<td class="text-right">{{ item.cantidadOriginal  }}</td>
+                            	{% endif %}  
+                                <td class="text-right">{{ item.precioUnitario|number_format(2, ',', '.')    }}</td>                              	
+                            	
+                                <td class="text-right">{{ item.importeOriginal|number_format(2, ',', '.')    }}</td>                                     
+                            </tr>
+				        {% endfor %}
+					</tbody>
+				</table>
+	</div>
+</div>
+	
+	
+	
+	
+	
+	
+</div>
+

@@ -1,0 +1,144 @@
+<?php
+
+namespace Mant\AlmacenBundle\Entity\movimientos;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * TransferenciaStock
+ *
+ * @ORM\Table(name="transferencias_stock")
+ * @ORM\Entity
+ */
+class TransferenciaStock extends MovimientoStock
+{
+    /**
+    * @ORM\ManyToOne(targetEntity="Mant\AlmacenBundle\Entity\Almacen") 
+    * @ORM\JoinColumn(name="id_almacen_origen", referencedColumnName="id")
+    */   
+    private $almacenOrigen;     
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="Mant\AlmacenBundle\Entity\Almacen") 
+    * @ORM\JoinColumn(name="id_almacen_destino", referencedColumnName="id")
+    */   
+    private $almacenDestino;       
+
+    /**
+     *
+     * @ORM\Column(name="procesado", type="boolean")
+     */
+     private $procesado;
+
+
+    /**
+     * Set almacenOrigen
+     *
+     * @param \Mant\AlmacenBundle\Entity\Almacen $almacenOrigen
+     * @return TransferenciaStock
+     */
+    public function setAlmacenOrigen(\Mant\AlmacenBundle\Entity\Almacen $almacenOrigen = null)
+    {
+        $this->almacenOrigen = $almacenOrigen;
+
+        return $this;
+    }
+
+    /**
+     * Get almacenOrigen
+     *
+     * @return \Mant\AlmacenBundle\Entity\Almacen 
+     */
+    public function getAlmacenOrigen()
+    {
+        return $this->almacenOrigen;
+    }
+
+    /**
+     * Set almacenDestino
+     *
+     * @param \Mant\AlmacenBundle\Entity\Almacen $almacenDestino
+     * @return TransferenciaStock
+     */
+    public function setAlmacenDestino(\Mant\AlmacenBundle\Entity\Almacen $almacenDestino = null)
+    {
+        $this->almacenDestino = $almacenDestino;
+
+        return $this;
+    }
+
+    /**
+     * Get almacenDestino
+     *
+     * @return \Mant\AlmacenBundle\Entity\Almacen 
+     */
+    public function getAlmacenDestino()
+    {
+        return $this->almacenDestino;
+    }
+    
+    public function getDescripcionFormulario()
+    {
+        return "Transferencia de Stock";
+    }
+    
+    public function updateItems()
+    {
+        
+    }    
+    
+    public function getInstance()
+    {
+        return 4;
+    }
+    
+     public function getAlmacenOrigenData()
+     {
+         return $this->almacenOrigen;
+     }
+     
+     public function getAlmacenDestinoData()
+     {
+        return $this->almacenOrigen; ///develve elorgien ya que eldestino debe aprobar la operacion    
+     }
+     
+     public function updateArticleItem(ItemMovimiento $item)
+     {
+        $item->setPrecioTotal($item->getCantidad() * $item->getPrecioUnitario());
+        $item->getArticulo()->updateStock((-1)*($item->getCantidad()));              
+     }     
+     
+     public function getProcesado()
+     {
+         return $this->procesado;
+     }
+     
+     public function setProcesado($procesado)
+     {
+         $this->procesado = $procesado;
+     }
+     
+     public function getTipoFormulario()
+     {
+         return 'trx';
+     }     
+     
+    public function getDepositoAAfectar()     
+    {
+        return $this->almacenOrigen;
+    }     
+    
+    public function getItemConfirmado()    
+    {
+        return false;
+    }    
+    
+    public function marcarProcesado($procesado){
+        $this->procesado = $procesado;
+    }
+    
+    public function movimientoConfirmado()
+    {
+        return false;
+    }    
+}

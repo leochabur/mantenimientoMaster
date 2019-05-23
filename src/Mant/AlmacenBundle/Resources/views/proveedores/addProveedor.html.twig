@@ -1,0 +1,41 @@
+{% include('ppal.html.twig') %}
+
+<div class="container">
+   <div class="col-md-6">
+	{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'role':'form'}})}}
+	    <h3>Nuevo Proveedor</h3>
+		<div class="form-group">
+			{{	form_label(form.deposito)	}}
+			{{	form_widget(form.deposito, {'attr':{'class' : 'form-control'}})}}
+			<span class="text-danger">
+				{{ form_errors(form.deposito) }}
+			</span>
+		</div>	    
+		<div class="form-group">
+			{{	form_label(form.razonSocial)	}}
+			{{	form_widget(form.razonSocial, {'attr':{'class' : 'form-control'}})}}
+			<span class="text-danger">
+				{{ form_errors(form.razonSocial) }}
+			</span>
+		</div>
+		<div class="form-group">
+			{{	form_label(form.cuit)	}}
+			{{	form_widget(form.cuit, {'attr':{'class' : 'form-control'}})}}
+			<span class="text-danger">
+				{{ form_errors(form.cuit) }}
+			</span>
+		</div>			
+		<div class="form-group">
+			{{	form_label(form.direccion)	}}
+			{{	form_widget(form.direccion, {'attr':{'class' : 'form-control'}})}}
+			<span class="text-danger">
+				{{ form_errors(form.direccion) }}
+			</span>
+		</div>		
+		<p>
+			{{ form_widget(form.save, {'attr':{'class' : 'btn btn-success'}})}}
+		</p>
+
+	{{ form_end(form)}} 
+  </div>
+</div>

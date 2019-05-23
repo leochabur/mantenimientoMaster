@@ -1,0 +1,139 @@
+<?php
+
+namespace Mant\AlmacenBundle\Entity\movimientos;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * OrdenCompra
+ *
+ * @ORM\Table(name="orden_compra")
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks() 
+ */
+class OrdenCompra extends MovimientoStock
+{
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="Proveedor") 
+    * @ORM\JoinColumn(name="id_proveedor", referencedColumnName="id")
+    * @Assert\NotBlank(message="El campo no puede permanecer en blanco!")    * 
+    */   
+    private $proveedor;   
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="Mant\AlmacenBundle\Entity\Almacen") 
+    * @ORM\JoinColumn(name="id_almacen_destino", referencedColumnName="id")
+    * @Assert\NotBlank(message="El campo no puede permanecer en blanco!")    * 
+    */   
+    private $almacenDestino;   
+
+    /**
+     * Set almacenDestino
+     *
+     * @param \Mant\AlmacenBundle\Entity\Almacen $almacenDestino
+     * @return EntradaStock
+     */
+    public function setAlmacenDestino(\Mant\AlmacenBundle\Entity\Almacen $almacenDestino = null)
+    {
+        $this->almacenDestino = $almacenDestino;
+
+        return $this;
+    }
+
+    /**
+     * Get almacenDestino
+     *
+     * @return \Mant\AlmacenBundle\Entity\Almacen 
+     */
+    public function getAlmacenDestino()
+    {
+        return $this->almacenDestino;
+    }
+    
+    
+    public function getDescripcionFormulario()
+    {
+        return "Orden de Compra";
+    }
+    
+
+    /**
+     * Set numero
+     *
+     * @param integer $numero
+     * @return EntradaStock
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    /**
+     * Get numero
+     *
+     * @return integer 
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+    
+    public function getInstance()
+    {
+        return 2;
+    }
+    
+     public function getAlmacenOrigenData()
+     {
+         return null;
+     }
+     
+     public function getAlmacenDestinoData()
+     {
+        return $this->almacenDestino;    
+     }
+     
+     public function updateArticleItem(ItemMovimiento $item)
+     {
+        $item->setPrecioTotal($item->getCantidad() * $item->getPrecioUnitario());
+        $item->getArticulo()->updateStock($item->getCantidad());        
+     }
+     
+     public function getProcesado()
+     {
+
+     }
+     public function setProcesado($procesado)
+     {
+
+     }
+     
+     public function getTipoFormulario()
+     {
+         return 'oc';
+     }
+     
+    public function getDepositoAAfectar()     
+    {
+        return $this->almacenDestino;
+    }     
+    
+    public function getItemConfirmado()    
+    {
+        return true;
+    }
+    
+    public function marcarProcesado($procesado){
+
+    }
+    
+    public function movimientoConfirmado()
+    {
+        return true;
+    }    
+     
+}
