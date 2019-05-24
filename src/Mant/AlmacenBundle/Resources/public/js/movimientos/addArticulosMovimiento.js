@@ -28,7 +28,8 @@ $(document).ready(function() {
                                         $('.results tbody tr[visible="true"]').trigger( "click" );
                                         $(".search").val('');
                                         $(".search").keyup(); 
-                                        $('.cant-item').focus();                                        
+                                        $('.cant-item').focus();     
+                                        $('.btn-add-article').trigger("click");                             
                                       }
                                     }
                                   }
@@ -71,6 +72,7 @@ $(document).ready(function() {
                                                                                                                     
                                                                           });
                                                                           $(".rowvalue").val('');
+                                                                          $(".rowvaluecant").val('1');
                                                                           if (response.warning){
                                                                             bootbox.alert({
                                                                                             message: response.msge,

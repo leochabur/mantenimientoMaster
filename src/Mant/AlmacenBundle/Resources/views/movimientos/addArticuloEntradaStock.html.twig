@@ -76,9 +76,9 @@
 			<div class="col-md-2 rowdata ">{{ form_widget(form.codigo, { 'attr': {'placeholder': 'Codigo', 'class' : 'form-control rowvalue form-control-sm' } }) }}</div>
 			<div class="col-md-3 rowdata">{{ form_widget(form.descripcion, { 'attr': {'placeholder': 'Descripcion', 'class' : 'form-control rowvalue form-control-sm' } }) }}</div>
 			<div class="col-md-2 rowdata">{{ form_widget(form.marca, { 'attr': {'placeholder': 'Marca', 'class' : 'form-control rowvalue form-control-sm' } }) }}</div>			
-			<div class="col-md-1 rowdata">{{ form_widget(form.cantidad, { 'attr': {'placeholder': 'Cant.', 'class' : 'form-control rowvalue form-control-sm cant-item' } }) }}</div>
+			<div class="col-md-1 rowdata">{{ form_widget(form.cantidad, { 'attr': {'value':'1', 'placeholder': 'Cant.', 'class' : 'form-control rowvaluecant rowvalue form-control-sm cant-item' } }) }}</div>
 			<div class="col-md-2 rowdata">{{ form_widget(form.unitario, { 'attr': {'placeholder': 'Unitario', 'class' : 'form-control rowvalue unitprice form-control-sm' } }) }}</div>
-			<div class="col-md-1 rowdata">{{ form_widget(form.save, {'attr':{'class' : 'btn btn-success btn-add btn-sm'}}) }}</div>
+			<div class="col-md-1 rowdata">{{ form_widget(form.save, {'attr':{'class' : 'btn btn-success btn-add btn-sm btn-add-article'}}) }}</div>
 			{{ form_widget(form.articulo, {'attr':{'data-id' : '0'}}) }}
 		</div>
     </div>
