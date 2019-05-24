@@ -21,8 +21,7 @@ class ConsumoStockType extends AbstractType
         $builder
             ->add('movimiento', new MovimientoStockType('cons'), array(
                 'data_class' => 'Mant\AlmacenBundle\Entity\movimientos\SalidaStock',
-            ))
-            ->add('numeroOrdenTrabajo')            
+            ))        
             ->add('almacenOrigen', 'entity', array('class' => 'MantAlmacenBundle:Almacen',
                                             'query_builder' => function(AlmacenRepository $er) use ($user){
                                                                                                
