@@ -6,7 +6,16 @@ mant_almacen_entrada_stock_procesar:
     path:     /entradasp
     defaults: { _controller: MantAlmacenBundle:Movimientos:procesarFormularioEntrada }   
     methods: POST
+#//////////alta de sector
+mant_almacen_alta_sector:
+    path:     /sector
+    defaults: { _controller: MantAlmacenBundle:Movimientos:altaSector }
     
+mant_almacen_alta_sector_procesar:
+    path:     /sectorprocesar
+    defaults: { _controller: MantAlmacenBundle:Movimientos:altaSectorProcesar }   
+    methods: POST
+#////////////////fin alta sector    
 mant_almacen_consumo_stock:
     path:     /consumo
     defaults: { _controller: MantAlmacenBundle:Movimientos:consumoStock }

@@ -155,6 +155,14 @@ abstract class MovimientoStock
     private $fechaAutorizacion; ///en el caso, por ejemplo, de las OC que exceden el stock maximo y quedan como pednientes, al monento de salvar la observacion se actualiza la fecha que se realiza la accion correpondiente
     
     protected $roleAutorizante;///cada Movimiento de Stcok que hereda de la clase, instancia cual es el role que se encaragra, de ser necesario, de autorizar el movimiento
+
+    /**
+    * @ORM\ManyToOne(targetEntity="Sector") 
+    * @ORM\JoinColumn(name="id_sector_consumo", referencedColumnName="id", nullable=true)
+    */      
+    private $sectorConsumo;   /////para el caso que lo que se consuma y/o transfiera no sea a un deposito sino a un sector Ej. Trafic, RRHH
+
+
     /**
      * Get id
      *
@@ -322,9 +330,10 @@ abstract class MovimientoStock
      public abstract function getItemConfirmado();////devuelve si el item que se agrega al formulario queda confirmado o no
      public abstract function marcarProcesado($procesado);
      public abstract function movimientoConfirmado(); /////indica si el movimiento una vez cargado debe ser confirmado, caso las transferencias que deben ser confirmadas por el receptor y/o las ordenes de compra
-     public abstract function verificarItem($item, $sRealOrigen, $sRealDestino);
+     public abstract function verificarItem($item, $sRealOrigen, $sRealDestino, $stockEnTransito);
      public abstract function getNameProveedor();
      public abstract function setAutorizacionFormulario();     
+     public abstract function getControlaStockPorMarca(); ///indica si el control de stock se realiza para los articulos con marca o solo articulos de manera abstract
 
     /**
      * Set numeroComprobante
@@ -674,5 +683,37 @@ abstract class MovimientoStock
     public function getFacturado()
     {
         return $this->facturado;
+    }
+
+    /**
+     * Set fechaAutorizacion
+     *
+     * @param \DateTime $fechaAutorizacion
+     * @return MovimientoStock
+     */
+    public function setFechaAutorizacion($fechaAutorizacion)
+    {
+        $this->fechaAutorizacion = $fechaAutorizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaAutorizacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechaAutorizacion()
+    {
+        return $this->fechaAutorizacion;
+    }
+    
+    public function getImporteTotal()
+    {
+        $sum = 0;
+        foreach ($this->items as $item){
+            $sum+=$item->getPrecioTotal();
+        }
+        return $sum;
     }
 }

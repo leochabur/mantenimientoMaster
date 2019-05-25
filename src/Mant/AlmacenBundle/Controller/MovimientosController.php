@@ -18,9 +18,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Mant\AlmacenBundle\Entity\AlmacenRepository;
 use Mant\AlmacenBundle\Entity\opciones\NumeracionFormulario;
 use Mant\AlmacenBundle\Entity\movimientos\DocumentoEntrada;
+use Mant\AlmacenBundle\Entity\movimientos\Sector;
 use Mant\AlmacenBundle\Entity\ArticuloMarcaAlmacen;
 use Mant\AlmacenBundle\Entity\movimientos\OrdenCompra;
 use Mant\AlmacenBundle\Form\movimientos\OrdenCompraType;
+use Mant\AlmacenBundle\Form\movimientos\SectorType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
@@ -77,6 +79,33 @@ class MovimientosController extends Controller
         return $this->createForm(new ConsumoStockType(), $movimiento, array('action'=>$this->generateUrl('mant_almacen_consumo_stock_procesar'), 'method'=>'POST', 'user' => $this->getUser()));
     }    
     
+
+    public function altaSectorAction(){
+        $sector = new Sector();
+        $form = $this->createFormAltaSector($sector);
+        return $this->render('MantAlmacenBundle:movimientos:altaSector.html.twig', array('form'=>$form->createView()));  
+    }
+    
+    private function createFormAltaSector($sector)
+    {
+        return $this->createForm(new SectorType(), $sector, array('action'=>$this->generateUrl('mant_almacen_alta_sector_procesar'), 'method'=>'POST'));
+    } 
+
+    public function altaSectorProcesarAction(Request $request)
+    {
+        $sector = new Sector();
+        $form = $this->createFormAltaSector($sector);
+        $form->handleRequest($request);
+        if ($form->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($sector);
+            $em->flush();
+            return $this->redirectToRoute('mant_almacen_alta_sector');
+        }
+        return $this->render('MantAlmacenBundle:movimientos:altaSector.html.twig', array('form'=>$form->createView()));          
+    } 
+
+
     public function procesarFormularioConsumoAction(Request $request)
     {
         $movimiento = new ConsumoStock();

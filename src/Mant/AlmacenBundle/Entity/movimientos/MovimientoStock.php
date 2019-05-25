@@ -155,6 +155,14 @@ abstract class MovimientoStock
     private $fechaAutorizacion; ///en el caso, por ejemplo, de las OC que exceden el stock maximo y quedan como pednientes, al monento de salvar la observacion se actualiza la fecha que se realiza la accion correpondiente
     
     protected $roleAutorizante;///cada Movimiento de Stcok que hereda de la clase, instancia cual es el role que se encaragra, de ser necesario, de autorizar el movimiento
+
+    /**
+    * @ORM\ManyToOne(targetEntity="Sector") 
+    * @ORM\JoinColumn(name="id_sector_consumo", referencedColumnName="id", nullable=true)
+    */      
+    private $sectorConsumo;   /////para el caso que lo que se consuma y/o transfiera no sea a un deposito sino a un sector Ej. Trafic, RRHH
+
+
     /**
      * Get id
      *
@@ -707,5 +715,28 @@ abstract class MovimientoStock
             $sum+=$item->getPrecioTotal();
         }
         return $sum;
+    }
+
+    /**
+     * Set sectorConsumo
+     *
+     * @param \Mant\AlmacenBundle\Entity\movimientos\Sector $sectorConsumo
+     * @return MovimientoStock
+     */
+    public function setSectorConsumo(\Mant\AlmacenBundle\Entity\movimientos\Sector $sectorConsumo = null)
+    {
+        $this->sectorConsumo = $sectorConsumo;
+
+        return $this;
+    }
+
+    /**
+     * Get sectorConsumo
+     *
+     * @return \Mant\AlmacenBundle\Entity\movimientos\Sector 
+     */
+    public function getSectorConsumo()
+    {
+        return $this->sectorConsumo;
     }
 }
