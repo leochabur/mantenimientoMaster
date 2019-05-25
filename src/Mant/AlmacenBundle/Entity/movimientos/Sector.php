@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table()
  * @ORM\Entity
- * @UniqueEntity("sector")
+ * @UniqueEntity("sector",  message="Ya existe un sector con ese nombre!")
  */
 class Sector
 {
@@ -27,7 +27,7 @@ class Sector
      * @var string
      *
      * @ORM\Column(name="sector", type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank( message="El sector no puede permanecer en blanco!")
      */
     private $sector;
 
@@ -61,6 +61,11 @@ class Sector
      * @return string 
      */
     public function getSector()
+    {
+        return $this->sector;
+    }
+
+    public function __toString()
     {
         return $this->sector;
     }

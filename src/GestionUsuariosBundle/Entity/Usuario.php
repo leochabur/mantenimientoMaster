@@ -7,12 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Usuario
  *
  * @ORM\Table(name="usuarios")
  * @ORM\Entity(repositoryClass="GestionUsuariosBundle\Entity\UsuarioRepository")
+ * @UniqueEntity("username",  message="Ya existe un usuario con ese nombre!")
  * @ORM\HasLifecycleCallbacks()
  */
 class Usuario implements AdvancedUserInterface, \Serializable

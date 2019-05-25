@@ -228,10 +228,10 @@ class ConsumoStock extends MovimientoStock
     }
     
     /**
-     * @Assert\IsTrue(message = "Debe completar alguno de los dos campos Unidad o Empleado!")
+     * @Assert\IsTrue(message = "Debe completar alguno de los dos campos Unidad, Empleado o Sector!")
      */
     public function isCocheOrEmploy()
     {
-        return $this->unidad || $this->empleado;
+        return $this->unidad || $this->empleado || $this->getSectorConsumo();
     }    
 }

@@ -46,7 +46,9 @@ class ConsumoStockType extends AbstractType
                                                                                                           ->where('u.activo = :activo')
                                                                                                           ->orderBy('u.apellido')
                                                                                                           ->setParameter('activo', true);
-                                                                                             }))                                                                                                
+                                                                                             }))         
+            ->add('sectorConsumo', 'entity', array('class' => 'MantAlmacenBundle:movimientos\Sector',
+                                                'required' => false))                                                                                                                                                                                     
             ->add('save', 'submit', array('label'=>'Agregar Articulos al Movimiento'));            
         ;
     }
