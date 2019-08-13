@@ -63,7 +63,9 @@
             Informes
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{{ path('mant_almacen_informes_listado_articulos')}}">Listado Articulos</a>            
+            {% if is_granted('ROLE_ADMIN') %}                 
+                <a class="dropdown-item" href="{{ path('mant_almacen_informes_listado_articulos')}}">Listado Articulos</a>   
+            {% endif %}         
             <a class="dropdown-item" href="{{ path('mant_almacen_informes_articulos_movimientos')}}">Movimiento Articulos</a>
           </div>        
       </li> 
