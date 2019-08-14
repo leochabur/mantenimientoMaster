@@ -20,7 +20,7 @@ class UsuarioType extends AbstractType
             ->add('apellido')
             ->add('email', 'email')
             ->add('clave', 'password')
-            ->add('role', 'choice', array('choices'=>array('ROLE_USER' => 'Usuario', 'ROLE_ADMIN' => 'Administrador', 'ROLE_PAX' => 'Pasajero', 'ROLE_SUPER_USUARIO' => 'Super Usuario')))
+            ->add('role', 'choice', array('choices'=>array('ROLE_USER' => 'Usuario', 'ROLE_ADMIN' => 'Administrador', 'ROLE_SUPER_ADMIN' => 'Super Usuario')))
             ->add('save', 'submit', array('label'=>'Guardar Usuario'));
         ;
     }
