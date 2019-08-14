@@ -34,6 +34,7 @@
                 <a class="dropdown-item btn" href="{{ path('mant_almacen_formularios_observados')}}">Ver Formularios Observados</a>      
           </div>
       </li>      
+      {% if is_granted('ROLE_ADMIN') %}  
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Proveedores
@@ -45,7 +46,8 @@
             <a class="dropdown-item btn" href="{{ path('proveedores_iniciar_alta_factura_proveedor')}}">Cargar Factura Compra</a>  
             <a class="dropdown-item btn" href="{{ path('proveedores_iniciar_carga_facturas_pendientes')}}">Ver facturas suspendidas</a>                 
           </div>
-      </li>           
+      </li>       
+      {% endif %}    
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Stock
