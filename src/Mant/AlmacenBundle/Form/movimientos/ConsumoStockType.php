@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Mant\AlmacenBundle\Entity\AlmacenRepository;
 use Mant\AlmacenBundle\Entity\gestion\EmpleadoRepository;
 use Mant\AlmacenBundle\Entity\gestion\UnidadRepository;
+use Mant\AlmacenBundle\Entity\movimientos\SectorRepository;
 
 class ConsumoStockType extends AbstractType
 {
@@ -48,7 +49,12 @@ class ConsumoStockType extends AbstractType
                                                                                                           ->setParameter('activo', true);
                                                                                              }))         
             ->add('sectorConsumo', 'entity', array('class' => 'MantAlmacenBundle:movimientos\Sector',
-                                                'required' => false))                                                                                                                                                                                     
+                                                'required' => false,
+                                                'query_builder' => function(SectorRepository $er){
+                                                                                               
+                                                                                                return $er->createQueryBuilder('u')
+                                                                                                          ->orderBy('u.sector');
+                                                                                             }))                                                                                                                                                                                     
             ->add('save', 'submit', array('label'=>'Agregar Articulos al Movimiento'));            
         ;
     }

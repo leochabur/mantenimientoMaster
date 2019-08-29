@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Sector
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Mant\AlmacenBundle\Entity\movimientos\SectorRepository")
  * @UniqueEntity("sector",  message="Ya existe un sector con ese nombre!")
  */
 class Sector
