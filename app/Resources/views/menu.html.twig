@@ -25,8 +25,8 @@
             {% if is_granted('ROLE_ADMIN') %}    
                 <a class="dropdown-item btn" href="{{ path('mant_almacen_entrada_stock')}}">Entrada Stock</a>
                 <a class="dropdown-item btn" href="{{ path('mant_almacen_salida_stock')}}">Salida Stock</a>
-                <a class="dropdown-item btn" href="{{ path('mant_almacen_transferencia_stock')}}">Transferencia Stock</a>      
             {% endif %}
+                <a class="dropdown-item btn" href="{{ path('mant_almacen_transferencia_stock')}}">Transferencia Stock</a>      
                 <a class="dropdown-item btn" href="{{ path('mant_almacen_autorizar_ingreso_stock')}}">Recepcionar Mercaderia</a>
                 <a class="dropdown-item btn" href="{{ path('mant_almacen_consumo_stock')}}">Consumir Stock</a>            
                 <a class="dropdown-item btn" href="{{ path('mant_almacen_view_documents')}}">Ver Formularios Cargados</a> 
