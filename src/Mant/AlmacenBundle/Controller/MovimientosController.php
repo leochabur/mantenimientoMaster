@@ -235,8 +235,9 @@ class MovimientosController extends Controller
         if (!$movAbierto){
             return $this->redirectToRoute('gestion_usuarios_homepage');
         }
-        $form = $this->createFormAddArticulo($id, 'mant_almacen_entrada_stock_add_items_procesar', ":ID_ART", "POST");
         $movimiento = $em->getRepository('MantAlmacenBundle:movimientos\MovimientoStock')->find($id);
+        $form = $this->createFormAddArticulo($id, 'mant_almacen_entrada_stock_add_items_procesar', ":ID_ART", "POST", ($movimiento->getTipoFormulario() == 'cons'));
+        
         $articulos = $em->getRepository('MantAlmacenBundle:ArticuloMarcaAlmacen')->articulosPorDeposito($movimiento->getAlmacenDestinoData(), $movimiento->getAlmacenOrigenData());
         $formClose = $this->createFomrCierreCargaArticulosMovimiento($id, 'mant_almacen_entrada_stock_add_items_close', 'POST');
         $formCancel = $this->createFormCancelCargaArticulosMovimiento($id, 'mant_almacen_entrada_stock_add_items_cancel', 'POST');
@@ -244,13 +245,13 @@ class MovimientosController extends Controller
         return $this->render('MantAlmacenBundle:movimientos:addArticuloEntradaStock.html.twig', array('descripcion'=> $movimiento->getDescripcionFormulario(), 'articulos'=> $articulos, 'movimiento' => $movimiento, 'form' => $form->createView(), 'formcierre' => $formClose->createView(), 'formcancel' => $formCancel->createView(), 'formpausa'=> $formPausa->createView(), 'type' => $movimiento->getInstance())); 
     }
     
-    private function createFormAddArticulo($id_movimiento, $url, $id_articulo, $method){
+    private function createFormAddArticulo($id_movimiento, $url, $id_articulo, $method, $unit = false){
            $form = $this->createFormBuilder()
                         ->add('codigo', 'text', array('attr' => array('readonly' => true)))    
                         ->add('descripcion', 'text')
                         ->add('marca', 'text', array('attr' => array('readonly' => true)))
                         ->add('cantidad', 'text')
-                        ->add('unitario', 'text')
+                        ->add('unitario', 'text', array('attr' => array('readonly' => $unit)))
                         ->add('movimiento', 'hidden',  array('data' => $id_movimiento))
                         ->add('articulo', 'hidden')                        
                         ->setAction($this->generateUrl($url, array('id_art' => $id_articulo)))
