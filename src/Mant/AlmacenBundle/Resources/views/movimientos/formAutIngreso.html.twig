@@ -26,9 +26,10 @@
                             <th>Codigo</th>
                             <th>Descripcion</th>
                             <th>Marca</th>
+                            <th>Unidad de Medida</th>
                             <th>Cantidad</th>
-                            <th>Unitario</th>           
-                            <th>Total</th> 
+                            <th>Precio Unitario</th>           
+                            <th>Precio Total</th> 
                             <th>Cant. a Ingresar</th>
 						</tr>
 					</thead>
@@ -38,9 +39,10 @@
                                 <td>{{ item.articulo.articuloMarca.articulo.codigo|upper }}</td>
                                 <td>{{ item.articulo.articuloMarca.articulo.descripcion|title }}</td>
                                 <td>{{ item.articulo.articuloMarca.marca|title }}</td>
-                                <td>{{ item.cantidad  }}</td>
-                                <td>{{ item.precioUnitario|number_format(2, '.', '')  }}</td>
-                                <td>{{ item.precioTotal|number_format(2, '.', '')  }}</td>        
+                                <td>{{ item.articulo.articuloMarca.articulo.unidad|title }}</td>
+                                <td class="text-right">{{ item.cantidad  }}</td>
+                                <td class="text-right">${{ item.precioUnitario|number_format(2, '.', '')  }}</td>
+                                <td class="text-right">${{ item.precioTotal|number_format(2, '.', '')  }}</td>        
                                 <td>
                                     {{ form_start(forms[item.id], {'attr': {'novalidate': 'novalidate', 'role':'form', 'class':'form-inline auting'}}) }}
                                     {{ form_widget(forms[item.id].cant , {'attr':{'class' : 'form-control form-control-sm estilo1'}}) }}
