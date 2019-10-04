@@ -236,7 +236,7 @@ class MovimientosController extends Controller
             return $this->redirectToRoute('gestion_usuarios_homepage');
         }
         $movimiento = $em->getRepository('MantAlmacenBundle:movimientos\MovimientoStock')->find($id);
-        $form = $this->createFormAddArticulo($id, 'mant_almacen_entrada_stock_add_items_procesar', ":ID_ART", "POST", ($movimiento->getTipoFormulario() == 'cons'));
+        $form = $this->createFormAddArticulo($id, 'mant_almacen_entrada_stock_add_items_procesar', ":ID_ART", "POST", !($movimiento->getTipoFormulario() == 'oc'));
         
         $articulos = $em->getRepository('MantAlmacenBundle:ArticuloMarcaAlmacen')->articulosPorDeposito($movimiento->getAlmacenDestinoData(), $movimiento->getAlmacenOrigenData());
         $formClose = $this->createFomrCierreCargaArticulosMovimiento($id, 'mant_almacen_entrada_stock_add_items_close', 'POST');
