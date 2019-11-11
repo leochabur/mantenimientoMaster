@@ -430,7 +430,7 @@ class MovimientosController extends Controller
                     $item->setMovimiento($movimiento);
                     $item->setConfirmado($movimiento->getItemConfirmado());
                     $stockEnTransito = $repoArticulo->getStockArticuloPendienteDeConfirmar($articulo); //devuelve la cantidad de articulos en los movimientos pendientes de confirmar
-                    return new JsonResponse(array('ok' => false, 'msge' => 'El Stock en transito es de '.$stockEnTransito['stock']));
+                  //  return new JsonResponse(array('ok' => false, 'msge' => 'El Stock en transito es de '.$stockEnTransito['stock']));
                     if (!$movimiento->getControlaStockPorMarca())////la orden de compra evalua Articulos Abstractos, el resto de los movimientos Articulos Concretos con Marca
                     {
                         $stockRealOrigen = $repoArticulo->getStockMaxMinArticuloAlmacen($articulo->getArticuloMarca()->getArticulo(), $movimiento->getAlmacenOrigenData());
