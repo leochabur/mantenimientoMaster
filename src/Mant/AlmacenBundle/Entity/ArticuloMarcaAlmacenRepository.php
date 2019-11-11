@@ -5,7 +5,7 @@ namespace Mant\AlmacenBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Mant\AlmacenBundle\Entity\Almacen;
 use Mant\AlmacenBundle\Entity\movimientos\OrdenCompra;
-use Mant\AlmacenBundle\Entity\movimientos\ConsumoStock;
+use Mant\AlmacenBundle\Entity\movimientos\DocumentoEntrada;
 /**
  * ArticuloAlmacenRepository
  *
@@ -169,7 +169,7 @@ class ArticuloMarcaAlmacenRepository extends EntityRepository
                     ->setParameter('confirmado', false)                    
                     ->setParameter('articulo', $ama)
                     ->setParameter('type', $this->getEntityManager()->getClassMetadata(OrdenCompra::class))        
-                    ->setParameter('type2', $this->getEntityManager()->getClassMetadata(ConsumoStock::class))               
+                    ->setParameter('type2', $this->getEntityManager()->getClassMetadata(DocumentoEntrada::class))               
                     ->getOneOrNullResult();
     }
     
