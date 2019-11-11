@@ -5,6 +5,7 @@ namespace Mant\AlmacenBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Mant\AlmacenBundle\Entity\Almacen;
 use Mant\AlmacenBundle\Entity\movimientos\OrdenCompra;
+use Mant\AlmacenBundle\Entity\movimientos\ConsumoStock;
 /**
  * ArticuloAlmacenRepository
  *
@@ -163,11 +164,12 @@ class ArticuloMarcaAlmacenRepository extends EntityRepository
                                    JOIN it.articulo ama
                                    JOIN ama.articuloMarca am
                                    JOIN am.articulo ar
-                                   WHERE ms.confirmado = :confirmado AND ama = :articulo AND (NOT(ms INSTANCE OF :type))
+                                   WHERE ms.confirmado = :confirmado AND ama = :articulo AND (NOT(ms INSTANCE OF :type2)) AND (NOT(ms INSTANCE OF :type))
                                    GROUP BY ama.id')        
                     ->setParameter('confirmado', false)                    
                     ->setParameter('articulo', $ama)
-                    ->setParameter('type', $this->getEntityManager()->getClassMetadata(OrdenCompra::class))                    
+                    ->setParameter('type', $this->getEntityManager()->getClassMetadata(OrdenCompra::class))        
+                    ->setParameter('type2', $this->getEntityManager()->getClassMetadata(ConsumoStock::class))               
                     ->getOneOrNullResult();
     }
     
