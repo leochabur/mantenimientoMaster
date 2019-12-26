@@ -24,4 +24,18 @@ class FacturaProveedorRepository extends EntityRepository
             ->setParameter('procesada', false)                
             ->getResult();
     }       
+
+    public function getFacturasProveedor($deposito, $desde, $hasta)
+    {
+        return $this->getEntityManager()
+            ->createQuery('SELECT fp 
+                           FROM MantAlmacenBundle:finanzas\FacturaProveedor fp 
+                           WHERE fp.almacen = :almacen AND fp.fechaFactura BETWEEN :desde AND :hasta AND fp.procesada = :procesada'
+            )
+            ->setParameter('almacen', $deposito)           
+            ->setParameter('desde', $desde)      
+            ->setParameter('hasta', $hasta) 
+            ->setParameter('procesada', true)           
+            ->getResult();
+    }       
 }

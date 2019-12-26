@@ -13,6 +13,7 @@ use Mant\AlmacenBundle\Form\finanzas\FacturaProveedorType;
 use Mant\AlmacenBundle\Entity\movimientos\ProveedorRepository;
 use GestionUsuariosBundle\Entity\VerificaClave;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProveedoresController extends Controller
 {
@@ -331,6 +332,36 @@ class ProveedoresController extends Controller
     private function createFormAltaFacturaProveedor($factura, $deposito)
     {
         return $this->createForm(new FacturaProveedorType($deposito), $factura,array('action'=>$this->generateUrl('proveedores_alta_factura_proveedor_procesar', array('depo'=>$deposito->getId(), 'factu' => 0))));
-    }    
+    }
+
+    public function listarFacturasProveedorAction(Request $request){
+        $form = $this->createFormViewDocument();
+        $form->handleRequest($request);        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $em = $this->getDoctrine()->getManager();
+            $movimientos = $em->getRepository('MantAlmacenBundle:finanzas\FacturaProveedor')->getFacturasProveedor($data['deposito'], $data['desde'], $data['hasta']);
+            return $this->render('MantAlmacenBundle:proveedores:viewFacturas.html.twig', array('form'=>$form->createView(), 'movimientos'=>$movimientos));             
+        }
+        elseif ($form->isSubmitted() && (!$form->isValid())){
+            return $this->render('MantAlmacenBundle:proveedores:viewFacturas.html.twig', array('form'=>$form->createView())); 
+        }        
+        return $this->render('MantAlmacenBundle:proveedores:viewFacturas.html.twig', array('form'=>$form->createView())); 
+    }
+    
+    private function createFormViewDocument()
+    {
+        return $this->createFormBuilder()
+                    ->add('deposito', 'entity', array('class' => 'MantAlmacenBundle:Almacen',
+                                            'query_builder' => function(AlmacenRepository $er){
+                                                                                                return $er->createQueryBuilder('u')
+                                                                                                          ->where('u in (:depositos)')
+                                                                                                          ->setParameter('depositos', $this->getUser()->getDepositos()->toArray());
+                                                                                             }))  
+                    ->add('desde', 'date', array('widget' => 'single_text', 'constraints' => array(new NotBlank())))
+                    ->add('hasta', 'date', array('widget' => 'single_text', 'constraints' => array(new NotBlank())))
+                    ->add('save', 'submit', array('label'=>'Cargar Facturas'))
+                    ->getForm();
+    }     
     
 }
