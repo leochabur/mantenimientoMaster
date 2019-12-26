@@ -39,7 +39,7 @@
                             	{% endif %}  
                                 <td class="text-right">{{ item.precioUnitario|number_format(2, ',', '.')    }}</td>                              	
                             	
-                                <td class="text-right">{{ item.importeOriginal|number_format(2, ',', '.')    }}</td>                                     
+                                <td class="text-right">{{ item.precioTotal|number_format(2, ',', '.')    }}</td>                                     
                             </tr>
 				        {% endfor %}
 					</tbody>
