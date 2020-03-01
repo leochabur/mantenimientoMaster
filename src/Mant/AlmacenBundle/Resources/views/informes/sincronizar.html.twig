@@ -11,31 +11,38 @@
 			{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'role':'form', 'class' : 'action'}})}}
 				<div class="form-row">
 					<div class="col-6">
-								{{	form_label(form.entidades , 'Entidades')}}
 								{{	form_widget(form.entidades , {'attr':{'class' : 'form-control'}})}}
 								<span class="text-danger">
 									{{ form_errors(form.entidades ) }}
 								</span>
 					</div>
-				</div>
-				<div class="form-row">
 					<div class="col-3">
-						{{ form_widget(form.action, {'attr':{'class' : 'btn btn-success'}})}}
+						{{ form_widget(form.action, {'attr':{'class' : 'btn btn-warning'}})}}
 					</div>			
 				</div>
 			{{ form_end(form)}} 
 		  </div>
+		  <br>
+		  <div class="col-9">
+<div class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+</div>
+</div>
 		</div>
+
 {% endblock %}
 {% block javascripts %}
 {{ parent() }}
 	<script type="text/javascript">
 		$(document).ready(function(){
+			$('.progress').hide();
 			$('.action').submit(function(event){
 												event.preventDefault();
+												$('.progress').show();
 												$.post($(this).attr('action'), 
 													   $(this).serialize(),
 													   function(data){
+													   		$('.progress').hide();
 															alert(data.eleccion);
 												});
 			});

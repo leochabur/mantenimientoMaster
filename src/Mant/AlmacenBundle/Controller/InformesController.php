@@ -171,74 +171,77 @@ class InformesController extends Controller
         $em = $this->getDoctrine()->getManager();
         try
         {
-                $local = mysql_connect($this->getParameter('database_host'), $this->getParameter('database_user'), $this->getParameter('database_password'));
-                mysql_query("SET NAMES 'utf8'", $local);
-                mysql_select_db($this->getParameter('database_name'), $local);
+                $local = mysqli_connect($this->getParameter('database_host'),
+                                        $this->getParameter('database_user'),
+                                        $this->getParameter('database_password'),
+                                        $this->getParameter('database_name'));
 
-                $remoto = mysql_connect('traficonuevo.masterbus.net', 'c0mbexpuser', 'Mb2013Exp');
-                mysql_query("SET NAMES 'utf8'", $remoto);
-                mysql_select_db('c0mbexport', $remoto);
+                $remoto = mysqli_connect('traficonuevo.masterbus.net', 
+                                         'c0mbexpuser', 
+                                         'Mb2013Exp',
+                                         'c0mbexport');
 
                 //se deben actulizar primero las estructuras
                 $sql = "SELECT * FROM estructuras";
-                $estructuras = mysql_query($sql, $remoto);
-                while ($row = mysql_fetch_array($estructuras))
+                $estructuras = mysqli_query($remoto, $sql);
+                while ($row = mysqli_fetch_assoc($estructuras))
                 {
                     $str = $em->find(Estructura::class, $row['id']);
                     if (!$str)
                     {
                         $insert = "INSERT INTO estructuras ($row[id], '$row[nombre]', '$row[direccion]', $row[cant_cond])";
-                        mysql_query($insert, $local);                        
+                        mysqli_query($local,$insert);                        
                     }
                 }
 
 
                 if ($data['entidades'] == 'e')
                 {
+                    $entidades = "Empleados";
                     //////////////actualiza la lista bde ciudades/////////
                     $sql = "SELECT * FROM ciudades";
-                    $ciudades = mysql_query($sql, $remoto);
-                    while ($row = mysql_fetch_array($ciudades))
+                    $ciudades = mysqli_query($remoto, $sql);
+                    while ($row = mysqli_fetch_assoc($ciudades))
                     {
                         $city = $this->getCiudad($row['id'], $row['id_estructura']);
                         if (!$city)
                         { 
                             $insert = "INSERT INTO ciudades ($row[id], $row[id_estructura], $row[id_provincia], '$row[ciudad]', $row[lati], $row[long], $row[esCabecera])";
-                            mysql_query($insert, $local);                        
+                            mysqli_query($local, $insert);                        
                         }
                     }
                     /////////////////////////////////////////
 
                     //////////////actualiza la lista de cargos/////////
                     $sql = "SELECT * FROM cargo";
-                    $cargos = mysql_query($sql, $remoto);
-                    while ($row = mysql_fetch_array($cargos))
+                    $cargos = mysqli_query($remoto, $sql);
+                    while ($row = mysqli_fetch_assoc($cargos))
                     {
                         $cargo = $this->getCargo($row['id'], $row['id_estructura']);
                         if (!$cargo)
                         {
                             $insert = "INSERT INTO cargo ('$row[codigo]', '$row[descripcion]', $row[id], $row[id_estructura])";
-                            mysql_query($insert, $local);                        
+                            mysqli_query($local, $insert);                        
                         }
                     }
                     /////////////////////////////////////////
                     //////////////actualiza la lista de empleadores/////////
                     $sql = "SELECT * FROM empleadores";
-                    $empleadores = mysql_query($sql, $remoto);
-                    while ($row = mysql_fetch_array($empleadores))
+                    $empleadores = mysqli_query($remoto, $sql);
+                    while ($row = mysqli_fetch_assoc($empleadores))
                     {
                         $empleador = $em->find(Empleador::class, $row['id']);
                         if (!$empleador)
                         {
                             $insert = "INSERT INTO empleadores ($row[id], '$row[razon_social]', '$row[direccion]', '$row[cuit_cuil]','$row[telefono]','$row[mail]','$row[www]', $row[activo], $row[id_estructura], '$row[color]', '$row[usr]', '$row[pwd]')";
-                            mysql_query($insert, $local);                        
+                            mysqli_query($local, $insert);                        
                         }
                     }
                     /////////////////////////////////////////
                     //////////////actualiza la lista de empleados/////////
                     $sql = "SELECT * FROM empleados";
-                    $empleados = mysql_query($sql, $remoto);
-                    while ($row = mysql_fetch_array($empleados))
+                    $empleados = mysqli_query($remoto, $sql);
+                    while ($row = mysqli_fetch_assoc($empleados))
                     {
                         $empleado = $em->find(Empleado::class, $row['id_empleado']);
                         if (!$empleado)
@@ -278,7 +281,7 @@ class InformesController extends Controller
                                                                 $row[usuario_alta_definitiva],
                                                                 '$row[fecha_alta_definitiva]',
                                                                 '$row[fecha_fin_relacion_laboral]')";
-                            mysql_query($insert, $local);                        
+                            mysqli_query($local, $insert);                        
                         }
                         else{ //si el empleado ya existe actualiza el campo parasaber si sigue activo
                             $empleado->setActivo($row['activo']);
@@ -289,7 +292,7 @@ class InformesController extends Controller
         }
         catch (\Exception $e){return new JsonResponse(array('eleccion' => $e->getMessage()));}
         
-        return new JsonResponse(array('eleccion' => $data['entidades']));
+        return new JsonResponse(array('eleccion' => "$entidades sincronizados exitosamente!"));
     }
 
     private function getCiudad($city, $str)
