@@ -251,21 +251,21 @@ class InformesController extends Controller
                                                             $row[activo],
                                                             $row[id_tipounidad],
                                                             $row[id_estructura_tipounidad],
-                                                            ".($row[consumo]?$row[consumo]:'NULL').",
+                                                            ".($row['consumo']?$row['consumo']:'NULL').",
                                                             '$row[marca_motor]',
-                                                            ".($row[anio]?$row[anio]:'NULL').",
+                                                            ".($row['anio']?$row['anio']:'NULL').",
                                                             $row[procesado],
-                                                            ".($row[afectado_a_estructura]?$row[afectado_a_estructura]:'NULL').",
+                                                            ".($row['afectado_a_estructura']?$row['afectado_a_estructura']:'NULL').",
                                                             '$row[nueva_patente]',
-                                                            ".($row[capacidad_tanque]?$row[capacidad_tanque]:'NULL').",
-                                                            ".($row[km_x_litro]?$row[km_x_litro]:'NULL').",
+                                                            ".($row['capacidad_tanque']?$row['capacidad_tanque']:'NULL').",
+                                                            ".($row['km_x_litro']?$row['km_x_litro']:'NULL').",
                                                             $row[id_propietario],
-                                                            ".($row[id_pase]?$row[id_pase]:'NULL').",
+                                                            ".($row['id_pase']?$row['id_pase']:'NULL').",
                                                             $row[id_estructura],
-                                                            ".($row[id_calidadcoche]?$row[id_calidadcoche]:'NULL').",
-                                                            ".($row[id_estructura_calidadcoche]?$row[id_estructura_calidadcoche]:'NULL').",
+                                                            ".($row['id_calidadcoche']?$row['id_calidadcoche']:'NULL').",
+                                                            ".($row['id_estructura_calidadcoche']?$row['id_estructura_calidadcoche']:'NULL').",
                                                             $row[id_estructura_propietario],
-                                                            ".($row[id_tipoeje]?$row[id_tipoeje]:'NULL').")";
+                                                            ".($row['id_tipoeje']?$row['id_tipoeje']:'NULL').")";
                             if (!mysqli_query($local, $insert)){
                                 return new JsonResponse(array('eleccion' => 'ERROR '.mysqli_error($local)." SQL:  ".$insert));
                                 
