@@ -17,3 +17,12 @@ mant_almacen_activar_desactivar_articulo:
     path:     /desac/{art}
     defaults: { _controller: MantAlmacenBundle:Informes:activarDesactivarArticulo }    
     methods: [GET, POST]    
+
+mant_almacen_sincronizar_sistema_trafico:
+    path:     /sincr
+    defaults: { _controller: MantAlmacenBundle:Informes:sincronizarSistemas }    
+
+mant_almacen_sincronizar_sistema_trafico_procesar:
+    path:     /sincrproc
+    defaults: { _controller: MantAlmacenBundle:Informes:procesarSync }    
+    methods: [POST]    

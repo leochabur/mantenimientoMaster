@@ -8,6 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Mant\AlmacenBundle\Entity\gestion\Estructura;
+use Mant\AlmacenBundle\Entity\gestion\Cargo;
+use Mant\AlmacenBundle\Entity\gestion\Empleador;
+use Mant\AlmacenBundle\Entity\gestion\Empleado;
 
 class InformesController extends Controller
 {
@@ -135,5 +139,185 @@ class InformesController extends Controller
                                                                                              }))  
                     ->add('save', 'submit', array('label'=>'Cargar Articulos'));
         return $form->getForm();        
-    }    
+    }
+
+    private function getFormSinc()
+    {
+        return $this->createFormBuilder()
+                    ->add('entidades', 'choice', array(
+                            'choices'  => array(
+                                'Empleados' => 'e',
+                                'Unidades' => 'u',
+                            ),
+                            'choices_as_values' => true,
+                        ))
+                    ->add('action', 'submit', array('label'=>'Sincronizar'))
+                    ->setAction($this->generateUrl('mant_almacen_sincronizar_sistema_trafico_procesar'))
+                    ->setMethod('POST')
+                    ->getForm();
+    }
+
+    public function sincronizarSistemasAction()
+    {
+        $form = $this->getFormSinc();
+        return $this->render('MantAlmacenBundle:informes:sincronizar.html.twig', array('form'=>$form->createView()));   
+    }
+
+    public function procesarSyncAction(Request $request)
+    {
+        $form = $this->getFormSinc();
+        $form->handleRequest($request);
+        $data = $form->getData();
+        $em = $this->getDoctrine()->getManager();
+        try
+        {
+                $local = mysql_connect($this->getParameter('database_host'), $this->getParameter('database_user'), $this->getParameter('database_password'));
+                mysql_query("SET NAMES 'utf8'", $local);
+                mysql_select_db($this->getParameter('database_name'), $local);
+
+                $remoto = mysql_connect('traficonuevo.masterbus.net', 'c0mbexpuser', 'Mb2013Exp');
+                mysql_query("SET NAMES 'utf8'", $remoto);
+                mysql_select_db('c0mbexport', $remoto);
+
+                //se deben actulizar primero las estructuras
+                $sql = "SELECT * FROM estructuras";
+                $estructuras = mysql_query($sql, $remoto);
+                while ($row = mysql_fetch_array($estructuras))
+                {
+                    $str = $em->find(Estructura::class, $row['id']);
+                    if (!$str)
+                    {
+                        $insert = "INSERT INTO estructuras ($row[id], '$row[nombre]', '$row[direccion]', $row[cant_cond])";
+                        mysql_query($insert, $local);                        
+                    }
+                }
+
+
+                if ($data['entidades'] == 'e')
+                {
+                    //////////////actualiza la lista bde ciudades/////////
+                    $sql = "SELECT * FROM ciudades";
+                    $ciudades = mysql_query($sql, $remoto);
+                    while ($row = mysql_fetch_array($ciudades))
+                    {
+                        $city = $this->getCiudad($row['id'], $row['id_estructura']);
+                        if (!$city)
+                        { 
+                            $insert = "INSERT INTO ciudades ($row[id], $row[id_estructura], $row[id_provincia], '$row[ciudad]', $row[lati], $row[long], $row[esCabecera])";
+                            mysql_query($insert, $local);                        
+                        }
+                    }
+                    /////////////////////////////////////////
+
+                    //////////////actualiza la lista de cargos/////////
+                    $sql = "SELECT * FROM cargo";
+                    $cargos = mysql_query($sql, $remoto);
+                    while ($row = mysql_fetch_array($cargos))
+                    {
+                        $cargo = $this->getCargo($row['id'], $row['id_estructura']);
+                        if (!$cargo)
+                        {
+                            $insert = "INSERT INTO cargo ('$row[codigo]', '$row[descripcion]', $row[id], $row[id_estructura])";
+                            mysql_query($insert, $local);                        
+                        }
+                    }
+                    /////////////////////////////////////////
+                    //////////////actualiza la lista de empleadores/////////
+                    $sql = "SELECT * FROM empleadores";
+                    $empleadores = mysql_query($sql, $remoto);
+                    while ($row = mysql_fetch_array($empleadores))
+                    {
+                        $empleador = $em->find(Empleador::class, $row['id']);
+                        if (!$empleador)
+                        {
+                            $insert = "INSERT INTO empleadores ($row[id], '$row[razon_social]', '$row[direccion]', '$row[cuit_cuil]','$row[telefono]','$row[mail]','$row[www]', $row[activo], $row[id_estructura], '$row[color]', '$row[usr]', '$row[pwd]')";
+                            mysql_query($insert, $local);                        
+                        }
+                    }
+                    /////////////////////////////////////////
+                    //////////////actualiza la lista de empleados/////////
+                    $sql = "SELECT * FROM empleados";
+                    $empleados = mysql_query($sql, $remoto);
+                    while ($row = mysql_fetch_array($empleados))
+                    {
+                        $empleado = $em->find(Empleado::class, $row['id_empleado']);
+                        if (!$empleado)
+                        {
+                            $insert = "INSERT INTO empleados ($row[id_empleado],
+                                                              $row[legajo],
+                                                                '$row[domicilio]',
+                                                                $row[id_ciudad],
+                                                                '$row[telefono]',
+                                                                $row[id_nacionalidad],
+                                                                '$row[sexo]',
+                                                                '$row[fechanac]',
+                                                                '$row[tipodoc]',
+                                                                '$row[nrodoc]',
+                                                                '$row[cuil]',
+                                                                $row[activo],
+                                                                $row[id_sector],
+                                                                $row[id_cargo],
+                                                                $row[id_empleador],
+                                                                '$row[inicio_relacion_laboral]',
+                                                                '$row[apellido]',
+                                                                '$row[nombre]',
+                                                                '$row[login]',
+                                                                '$row[password]',
+                                                                $row[nivel_acceso],
+                                                                $row[contratado],
+                                                                '$row[fecha_alta]',
+                                                                '$row[fecha_ocupacional]',
+                                                                $row[id_estructura],
+                                                                $row[id_estructura_empleador],
+                                                                $row[procesado],
+                                                                $row[id_estructura_cargo],
+                                                                $row[id_estructura_ciudad],
+                                                                $row[afectado_a_estructura],
+                                                                $row[borrado],
+                                                                $row[usuario_alta_provisoria],
+                                                                $row[usuario_alta_definitiva],
+                                                                '$row[fecha_alta_definitiva]',
+                                                                '$row[fecha_fin_relacion_laboral]')";
+                            mysql_query($insert, $local);                        
+                        }
+                        else{ //si el empleado ya existe actualiza el campo parasaber si sigue activo
+                            $empleado->setActivo($row['activo']);
+                        }
+                    }
+                    /////////////////////////////////////////
+                }
+        }
+        catch (\Exception $e){return new JsonResponse(array('eleccion' => $e->getMessage()));}
+        
+        return new JsonResponse(array('eleccion' => $data['entidades']));
+    }
+
+    private function getCiudad($city, $str)
+    {
+        $dql = "SELECT c
+                FROM MantAlmacenBundle:gestion\Ciudad c
+                JOIN c.estructura e
+                WHERE c.id = :city AND e.id = :str";
+        return $this->getDoctrine()
+                    ->getManager()
+                    ->createQuery($dql)
+                    ->setParameter('city', $city)
+                    ->setParameter('str', $str)
+                    ->getOneOrNullResult();
+    }
+
+    private function getCargo($cargo, $str)
+    {
+        $dql = "SELECT c
+                FROM MantAlmacenBundle:gestion\Cargo c
+                JOIN c.estructura e
+                WHERE c.id = :cargo AND e.id = :str";
+        return $this->getDoctrine()
+                    ->getManager()
+                    ->createQuery($dql)
+                    ->setParameter('cargo', $cargo)
+                    ->setParameter('str', $str)
+                    ->getOneOrNullResult();
+    }
+        
 }

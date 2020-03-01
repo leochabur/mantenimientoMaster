@@ -1,0 +1,44 @@
+{% extends('ppal.html.twig') %}
+{% block stylesheets %}
+ 	<link rel="stylesheet" href="{{ asset('bundles/mantalmacen/css/estilos.css')}}">
+ 	{{ parent() }}
+{% endblock %}
+{% block body %}
+		{{ parent() }}
+		<div class="container">
+		   <div>
+		   	<div><h4>Sincronizar sistemas</h4></div>
+			{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'role':'form', 'class' : 'action'}})}}
+				<div class="form-row">
+					<div class="col-6">
+								{{	form_label(form.entidades , 'Entidades')}}
+								{{	form_widget(form.entidades , {'attr':{'class' : 'form-control'}})}}
+								<span class="text-danger">
+									{{ form_errors(form.entidades ) }}
+								</span>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-3">
+						{{ form_widget(form.action, {'attr':{'class' : 'btn btn-success'}})}}
+					</div>			
+				</div>
+			{{ form_end(form)}} 
+		  </div>
+		</div>
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.action').submit(function(event){
+												event.preventDefault();
+												$.post($(this).attr('action'), 
+													   $(this).serialize(),
+													   function(data){
+															alert(data.eleccion);
+												});
+			});
+		});
+	</script>
+{% endblock %}
