@@ -12,6 +12,8 @@ use Mant\AlmacenBundle\Entity\gestion\Estructura;
 use Mant\AlmacenBundle\Entity\gestion\Cargo;
 use Mant\AlmacenBundle\Entity\gestion\Empleador;
 use Mant\AlmacenBundle\Entity\gestion\Empleado;
+use Mant\AlmacenBundle\Entity\gestion\TipoUnidad;
+use Mant\AlmacenBundle\Entity\gestion\Unidad;
 
 class InformesController extends Controller
 {
@@ -193,9 +195,89 @@ class InformesController extends Controller
                         mysqli_query($local,$insert);                        
                     }
                 }
-
-
-                if ($data['entidades'] == 'e')
+                ////////////////////////////
+                    //////////////actualiza la lista de empleadores/////////
+                $sql = "SELECT * FROM empleadores";
+                $empleadores = mysqli_query($remoto, $sql);
+                while ($row = mysqli_fetch_assoc($empleadores))
+                {
+                        $empleador = $em->find(Empleador::class, $row['id']);
+                        if (!$empleador)
+                        {
+                            $insert = "INSERT INTO empleadores (id, razon_social, direccion, cuit_cuil, telefono, mail, www, activo, id_estructura, color, usr, pwd) values($row[id], '$row[razon_social]', '$row[direccion]', '$row[cuit_cuil]','$row[telefono]','$row[mail]','$row[www]', $row[activo], $row[id_estructura], '$row[color]', '$row[usr]', '$row[pwd]')";
+                            if (!mysqli_query($local, $insert))
+                            {
+                                return new JsonResponse(array('eleccion' => 'ERROR '.mysqli_error($local)." SQL:  ".$insert));
+                                
+                            }                         
+                        }
+                }
+                /////////////////////////////////////////
+                if ($data['entidades'] == 'u') //ACTUALIZA LAS UNIDADES
+                {
+                    $entidades = "Unidades";
+                    //////////////actualiza la lista de tipo de Unidades/////////
+                    $sql = "SELECT * FROM tipounidad";
+                    $tipos = mysqli_query($remoto, $sql);
+                    while ($row = mysqli_fetch_assoc($tipos))
+                    {
+                        $tipo = $this->getTipoUnidad($row['id'], $row['id_estructura']);
+                        if (!$tipo)
+                        {
+                            $insert = "INSERT INTO tipounidad ($row[id], '$row[tipo]', $row[id_estructura], $row[orden_capacidad])";
+                            mysqli_query($local, $insert);                        
+                        }
+                    }
+                    /////////////////////////////////////////
+                    /////actualiza los coches
+                    $sql = "SELECT * FROM unidades";
+                    $coches = mysqli_query($remoto, $sql);
+                    
+                    while ($row = mysqli_fetch_assoc($coches))
+                    {
+                        $coche = $em->find(Unidad::class, $row['id']);
+                        if (!$coche)
+                        {
+                            $insert = "INSERT INTO unidades (id, interno, patente, marca, modelo, cantasientos, video, bar, banio, activo, id_tipounidad, id_estructura_tipounidad, consumo, marca_motor, anio, procesado, afectado_a_estructura, nueva_patente, capacidad_tanque, km_x_litro, id_propietario, id_pase, id_estructura, id_calidadcoche, id_estructura_calidadcoche, id_estructura_propietario, id_tipoeje)
+                                                            VALUES ($row[id],
+                                                            $row[interno],
+                                                            '$row[patente]',
+                                                            '$row[marca]',
+                                                            '$row[modelo]',
+                                                            $row[cantasientos],
+                                                            $row[video],
+                                                            $row[bar],
+                                                            $row[banio],
+                                                            $row[activo],
+                                                            $row[id_tipounidad],
+                                                            $row[id_estructura_tipounidad],
+                                                            ".($row[consumo]?$row[consumo]:'NULL').",
+                                                            '$row[marca_motor]',
+                                                            ".($row[anio]?$row[anio]:'NULL').",
+                                                            $row[procesado],
+                                                            ".($row[afectado_a_estructura]?$row[afectado_a_estructura]:'NULL').",
+                                                            '$row[nueva_patente]',
+                                                            ".($row[capacidad_tanque]?$row[capacidad_tanque]:'NULL').",
+                                                            ".($row[km_x_litro]?$row[km_x_litro]:'NULL').",
+                                                            $row[id_propietario],
+                                                            ".($row[id_pase]?$row[id_pase]:'NULL').",
+                                                            $row[id_estructura],
+                                                            ".($row[id_calidadcoche]?$row[id_calidadcoche]:'NULL').",
+                                                            ".($row[id_estructura_calidadcoche]?$row[id_estructura_calidadcoche]:'NULL').",
+                                                            $row[id_estructura_propietario],
+                                                            ".($row[id_tipoeje]?$row[id_tipoeje]:'NULL').")";
+                            if (!mysqli_query($local, $insert)){
+                                return new JsonResponse(array('eleccion' => 'ERROR '.mysqli_error($local)." SQL:  ".$insert));
+                                
+                            }      
+                        }           
+                        else{
+                            $coche->setActivo($row['activo']);
+                        }
+                    }
+                    //////
+                }
+                elseif ($data['entidades'] == 'e') ///ACTUALIZA LOS EMPLEADOS
                 {
                     $entidades = "Empleados";
                     //////////////actualiza la lista bde ciudades/////////
@@ -221,19 +303,6 @@ class InformesController extends Controller
                         if (!$cargo)
                         {
                             $insert = "INSERT INTO cargo ('$row[codigo]', '$row[descripcion]', $row[id], $row[id_estructura])";
-                            mysqli_query($local, $insert);                        
-                        }
-                    }
-                    /////////////////////////////////////////
-                    //////////////actualiza la lista de empleadores/////////
-                    $sql = "SELECT * FROM empleadores";
-                    $empleadores = mysqli_query($remoto, $sql);
-                    while ($row = mysqli_fetch_assoc($empleadores))
-                    {
-                        $empleador = $em->find(Empleador::class, $row['id']);
-                        if (!$empleador)
-                        {
-                            $insert = "INSERT INTO empleadores ($row[id], '$row[razon_social]', '$row[direccion]', '$row[cuit_cuil]','$row[telefono]','$row[mail]','$row[www]', $row[activo], $row[id_estructura], '$row[color]', '$row[usr]', '$row[pwd]')";
                             mysqli_query($local, $insert);                        
                         }
                     }
@@ -289,6 +358,7 @@ class InformesController extends Controller
                     }
                     /////////////////////////////////////////
                 }
+                $em->flush();
         }
         catch (\Exception $e){return new JsonResponse(array('eleccion' => $e->getMessage()));}
         
@@ -319,6 +389,20 @@ class InformesController extends Controller
                     ->getManager()
                     ->createQuery($dql)
                     ->setParameter('cargo', $cargo)
+                    ->setParameter('str', $str)
+                    ->getOneOrNullResult();
+    }
+
+    private function getTipoUnidad($tipo, $str)
+    {
+        $dql = "SELECT c
+                FROM MantAlmacenBundle:gestion\TipoUnidad c
+                JOIN c.estructura e
+                WHERE c.id = :tipo AND e.id = :str";
+        return $this->getDoctrine()
+                    ->getManager()
+                    ->createQuery($dql)
+                    ->setParameter('tipo', $tipo)
                     ->setParameter('str', $str)
                     ->getOneOrNullResult();
     }
