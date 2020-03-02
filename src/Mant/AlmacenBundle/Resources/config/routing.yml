@@ -97,3 +97,12 @@ mant_import_articulos_almacen:
     path:     /import
     defaults: { _controller: MantAlmacenBundle:Almacen:importArtAlmacen }
     methods: [POST, GET]
+
+mant_nueva_unidad_medida:
+    path:     /unitmed
+    defaults: { _controller: MantAlmacenBundle:Almacen:altaUnidadMedida }     
+    
+mant_nueva_unidad_medida_procesar:
+    path:     /unitmedpr
+    defaults: { _controller: MantAlmacenBundle:Almacen:altaUnidadMedidaProcesar}
+    methods: [POST]

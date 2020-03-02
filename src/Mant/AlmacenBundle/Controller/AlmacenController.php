@@ -22,9 +22,37 @@ use Mant\AlmacenBundle\Entity\MarcaRepository;
 use Mant\AlmacenBundle\Entity\ArticuloMarca;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Mant\AlmacenBundle\Entity\StockArticuloAlmacen;
+use Mant\AlmacenBundle\Entity\Unidad;
+use Mant\AlmacenBundle\Form\UnidadType;
 
 class AlmacenController extends Controller
 {
+    public function altaUnidadMedidaAction()
+    {
+        $unidaMedida = new Unidad;
+        $form = $this->createForm(new UnidadType(), $unidaMedida, array('action'=>$this->generateUrl('mant_nueva_unidad_medida_procesar'), 'method'=>'POST'));
+        return $this->render('MantAlmacenBundle:options:addUnidadMedida.html.twig', array('form'=>$form->createView()));  
+    }
+
+    public function altaUnidadMedidaProcesarAction(Request $request)
+    {
+        $unidaMedida = new Unidad;
+        $form = $this->createForm(new UnidadType(), $unidaMedida, array('action'=>$this->generateUrl('mant_nueva_unidad_medida_procesar'), 'method'=>'POST'));
+        $form->handleRequest($request);
+        if ($form->isValid())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($unidaMedida);
+            $em->flush();
+            $this->addFlash(
+                            'response',
+                            'Se ha almacenado con exito la unidad de medida en la Base de Datos!'
+                            );    
+            return $this->redirectToRoute('mant_nueva_unidad_medida');
+        }
+        return $this->render('MantAlmacenBundle:options:addUnidadMedida.html.twig', array('form'=>$form->createView()));  
+    }
+
     public function addAction()
     {
         $almacen = new Almacen();
