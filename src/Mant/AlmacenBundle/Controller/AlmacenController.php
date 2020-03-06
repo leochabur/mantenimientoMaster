@@ -520,7 +520,12 @@ class AlmacenController extends Controller
                 }
             }
             $em->flush();
-            return new Response("No esiste");    
+            $this->addFlash(
+                            'response',
+                            'Articulos importados exitosamente!'
+                            );     
+            return $this->redirectToRoute('mant_import_articulos_almacen');
+
         }
         return $this->render('MantAlmacenBundle:options:importArtAlmacen.html.twig', array('form' => $form->createView()));
     }

@@ -1,7 +1,11 @@
 {% include('ppal.html.twig') %}
 <div class="container">
     <h5>Importar Articulos</h5>
-    	
+{% for message in app.session.flashBag.get('response') %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
 			{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'role':'form'}})}}   
 			<div class="row">
 				<div class="col">
