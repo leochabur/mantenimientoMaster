@@ -55,6 +55,15 @@ class ConsumoStock extends MovimientoStock
      {
          return null;
      }
+
+     public function getConsumidoPor()
+     {
+         if ($this->unidad)
+                return "INTERNO ".$this->unidad->getInterno();
+         if ($this->empleado)
+                return $this->empleado->getApellido().", ".$this->empleado->getNombre();
+         return $this->getSectorConsumo();
+     }
      
      public function updateArticleItem(ItemMovimiento $item)
      {

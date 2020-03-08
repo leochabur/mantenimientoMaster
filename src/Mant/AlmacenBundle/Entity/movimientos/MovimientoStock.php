@@ -739,4 +739,9 @@ abstract class MovimientoStock
     {
         return $this->sectorConsumo;
     }
+
+    public function getConsumidoPor()
+    {
+        return null;
+    }
 }

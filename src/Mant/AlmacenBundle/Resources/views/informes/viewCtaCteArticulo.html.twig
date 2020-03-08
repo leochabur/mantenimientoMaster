@@ -50,6 +50,8 @@
                     </td>
                     <td>{% if mov.most.almacenDestino is defined%}
                     		{{ mov.most.almacenDestino}}
+                    	{% else %}
+                    		{{ mov.most.consumidoPor }}
                     	{% endif %}
                     </td>  		                
 	                <td class="text-right">{{ mov.cant }}</td>
